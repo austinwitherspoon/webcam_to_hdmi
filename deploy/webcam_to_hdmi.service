@@ -1,0 +1,16 @@
+[Unit]
+Description=Dual webcam to HDMI mapper
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/webcam_to_hdmi
+ExecStart=/usr/local/bin/webcam_to_hdmi
+Restart=always
+RestartSec=2
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

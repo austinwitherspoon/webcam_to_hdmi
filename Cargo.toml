@@ -1,0 +1,10 @@
+[package]
+name = "webcam_to_hdmi"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[target.'cfg(target_os = "linux")'.dependencies]
+gstreamer = "0.23"
+gstreamer-video = "0.23"
