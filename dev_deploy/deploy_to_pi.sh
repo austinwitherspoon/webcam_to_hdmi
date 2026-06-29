@@ -24,12 +24,12 @@ Options:
   --install-service       Install and restart systemd service
   --no-build              Skip local build and deploy existing local binary
   --build-on-pi           Build natively on the Raspberry Pi
-  --skip-setup            Skip running deploy/setup_pi.sh on the Pi
+  --skip-setup            Skip running dev_deploy/setup_pi.sh on the Pi
   -h, --help              Show this help message
 
 Examples:
-  ./deploy/deploy_to_pi.sh --host-name rp5.lan --user-name austin --build-on-pi --install-service
-  ./deploy/deploy_to_pi.sh --host-name pi.local --user-name pi --no-build --install-service
+  ./dev_deploy/deploy_to_pi.sh --host-name rp5.lan --user-name austin --build-on-pi --install-service
+  ./dev_deploy/deploy_to_pi.sh --host-name pi.local --user-name pi --no-build --install-service
 EOF
 }
 
@@ -80,9 +80,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 bin_local="target/${TARGET}/release/webcam_to_hdmi"
-service_local="deploy/webcam_to_hdmi.service"
-setup_local="deploy/setup_pi.sh"
-build_on_pi_local="deploy/build_on_pi.sh"
+service_local="dev_deploy/webcam_to_hdmi.service"
+setup_local="dev_deploy/setup_pi.sh"
+build_on_pi_local="dev_deploy/build_on_pi.sh"
 
 if [[ ! -f "$setup_local" ]]; then
   echo "Missing setup script: $setup_local" >&2

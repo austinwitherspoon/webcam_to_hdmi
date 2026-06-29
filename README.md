@@ -9,6 +9,34 @@ Map two USB webcams to two HDMI outputs on Raspberry Pi 5 with independent behav
 
 > NOTE: This project was an experiment in vibe-coding. I have reviewed the code in this repo, but I do not have a deep understanding of the linux internals that allow most of this to work. I have confirmed it's functional on my own device, but use at your own risk.
 
+## One-Line Install On Raspberry Pi
+
+Run this on the Raspberry Pi:
+
+```bash
+curl -fsSL https://github.com/austinwitherspoon/webcam_to_hdmi/releases/latest/download/setup.sh | sudo sh
+```
+
+What this does:
+
+- Downloads the latest release binary from GitHub Releases
+- Installs runtime dependencies (GStreamer, DRM/V4L tools)
+- Auto-detects camera by-path and HDMI connector IDs
+- Writes `/etc/default/webcam_to_hdmi`
+- Installs and starts `webcam_to_hdmi.service`
+
+## GitHub Release Build
+
+GitHub Actions workflow:
+
+- Builds Linux arm64 binary (`aarch64-unknown-linux-gnu`)
+- Publishes release assets on tag pushes matching `v*`
+- Uploads these assets:
+  - `webcam_to_hdmi-aarch64-unknown-linux-gnu`
+  - `setup.sh`
+
+To publish a new release, create and push a tag such as `v0.2.0`.
+
 ## Prerequisites
 
 ### On Raspberry Pi 5
@@ -26,20 +54,20 @@ Map two USB webcams to two HDMI outputs on Raspberry Pi 5 with independent behav
   - Preferred: native build on Pi (`--build-on-pi` / `-BuildOnPi`)
   - Optional: local cross build with `cross`
 
-## Quick Start (Windows)
+## Dev Deploy over SSH (Windows)
 
 From repo root:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File deploy/deploy_to_pi.ps1 -HostName [ip-of-pi] -UserName pi -BuildOnPi -InstallService
+powershell -ExecutionPolicy Bypass -File dev_deploy/deploy_to_pi.ps1 -HostName [ip-of-pi] -UserName pi -BuildOnPi -InstallService
 ```
 
-## Quick Start (Linux/macOS)
+## Dev Deploy over SSH (Linux/macOS)
 
 From repo root:
 
 ```bash
-bash deploy/deploy_to_pi.sh --host-name [ip-of-pi] --user-name pi --build-on-pi --install-service
+bash dev_deploy/deploy_to_pi.sh --host-name [ip-of-pi] --user-name pi --build-on-pi --install-service
 ```
 
 ## Bash Deploy Script Options
@@ -52,7 +80,7 @@ bash deploy/deploy_to_pi.sh --host-name [ip-of-pi] --user-name pi --build-on-pi 
 --install-service       Install and restart systemd service
 --no-build              Skip local build and deploy existing local binary
 --build-on-pi           Build natively on the Raspberry Pi
---skip-setup            Skip running deploy/setup_pi.sh on the Pi
+--skip-setup            Skip running dev_deploy/setup_pi.sh on the Pi
 ```
 
 ## Runtime Configuration
@@ -63,10 +91,10 @@ Main config file on Pi:
 
 Key variables:
 
-- `USB1_CAM_DEV` (default auto-detected)
-- `USB2_CAM_DEV` (default auto-detected)
-- `HDMI1_CONNECTOR_ID` (default auto-detected)
-- `HDMI2_CONNECTOR_ID` (default auto-detected)
+- `USB1_CAM_DEV` (default `/dev/v4l/by-path/platform-xhci-hcd.1-usb-0:1:1.0-video-index0`)
+- `USB2_CAM_DEV` (default `/dev/v4l/by-path/platform-xhci-hcd.0-usb-0:1:1.0-video-index0`)
+- `HDMI1_CONNECTOR_ID` (default `35`)
+- `HDMI2_CONNECTOR_ID` (default `44`)
 - `HDMI1_PLANE_ID` (optional)
 - `HDMI2_PLANE_ID` (optional)
 - `DRM_CARD_DEV` (default `/dev/dri/card1`)
@@ -75,6 +103,8 @@ Key variables:
 - `FPS` (default `30`)
 - `POLL_MS` (default `1000`)
 - `CAMERA_RETRY_MS` (default `5000`)
+
+`deploy/setup.sh` uses these known-good defaults first so setup does not depend on cameras being connected during install; if matching devices are present, it will still prefer detected by-path values.
 
 ## Useful Commands
 
@@ -107,18 +137,3 @@ Inspect HDMI connector IDs:
 ```bash
 modetest -M vc4 -c
 ```
-
-## Validation Checklist
-
-1. Only camera 1 connected:
-  - HDMI1 shows camera
-  - HDMI2 shows black
-2. Only camera 2 connected:
-  - HDMI2 shows camera
-  - HDMI1 shows black
-3. Both connected:
-  - Both HDMI outputs show their mapped cameras
-4. Unplug/replug camera 1:
-  - HDMI2 stays stable
-5. Unplug/replug camera 2:
-  - HDMI1 stays stable

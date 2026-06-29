@@ -12,9 +12,9 @@ param(
 $ErrorActionPreference = "Stop"
 
 $binLocal = "target/$Target/release/webcam_to_hdmi"
-$serviceLocal = "deploy/webcam_to_hdmi.service"
-$setupLocal = "deploy/setup_pi.sh"
-$buildOnPiLocal = "deploy/build_on_pi.sh"
+$serviceLocal = "dev_deploy/webcam_to_hdmi.service"
+$setupLocal = "dev_deploy/setup_pi.sh"
+$buildOnPiLocal = "dev_deploy/build_on_pi.sh"
 
 if (-not (Test-Path $setupLocal)) {
     throw "Missing setup script: $setupLocal"
