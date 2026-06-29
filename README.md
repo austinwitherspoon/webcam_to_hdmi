@@ -1,11 +1,10 @@
 # Raspberry Pi 5 Webcam To HDMI Service
+A Service to automatically display up to 2 webcams on the 2 HDMI outputs on the raspberry pi.
+Created so I could use normal USB webcams as inputs to an Atem Mini video switcher.
 
-Map two USB webcams to two HDMI outputs on Raspberry Pi 5 with independent behavior:
+Run the setup script below on a brand new Raspberry Pi 5 to initialize the service.
 
-- USB camera 1 -> HDMI 1 fullscreen
-- USB camera 2 -> HDMI 2 fullscreen
-- If a camera is missing, that HDMI shows black
-- Plug/unplug on one camera does not restart or disturb the other output
+Simply turn on the raspberry pi and it will mirror USB webcams to HDMI outputs in realtime.
 
 > NOTE: This project was an experiment in vibe-coding. I have reviewed the code in this repo, but I do not have a deep understanding of the linux internals that allow most of this to work. I have confirmed it's functional on my own device, but use at your own risk.
 
@@ -37,7 +36,7 @@ GitHub Actions workflow:
 
 To publish a new release, create and push a tag such as `v0.2.0`.
 
-## Prerequisites
+## Develop and deploy over SSH
 
 ### On Raspberry Pi 5
 
